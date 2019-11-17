@@ -22,6 +22,6 @@ HTML is in `/src/views`. Note that for views we are not using pure HTML, we're u
 
 Also, your `.hbs` file does NOT need to be a full HTML page. The file `/src/views/layouts/application.hbs` contains a "layout" file - basically, everything in that file gets added to every page, so it's the place for generic things like the HTML skeleton, navbars, footers, and similar.
 
-CSS files are in `/static/css`. There is only one file so far but feel free to add more, it's better than having one big messy one. If you add any new files, you must add a new <link> tag to the application layout file mentioned above so that it gets imported.
+CSS files are in `/static/css`. There is only one file so far but feel free to add more, it's better than having one big messy one. If you add any new files, you must add a new `<link>` tag to the application layout file mentioned above so that it gets imported.
 
 Text me if I forgot to mention anything!
