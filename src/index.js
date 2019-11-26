@@ -124,7 +124,7 @@ router.post('/users/delete', async ctx => {
  * View all the users
  */
 router.get('/', async ctx => {
-  const artifacts = await database.all(`
+  const users = await database.all(`
     SELECT id, name, role 
     FROM users
   `);
