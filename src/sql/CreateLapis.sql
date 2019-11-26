@@ -38,10 +38,10 @@ CREATE TABLE Craftable (
 
 CREATE TABLE AuthoredBy (
   artifactID INTEGER,
-  experimentID INTEGER,
+  userID INTEGER,
   PRIMARY KEY(artifactID, experimentID),
   FOREIGN KEY (artifactID) REFERENCES Artifacts (id),
-  FOREIGN KEY (experimentID) REFERENCES Experiments (id)
+  FOREIGN KEY (userID) REFERENCES Users (id)
 );
 
 CREATE TABLE Run(
