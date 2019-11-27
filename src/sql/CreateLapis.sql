@@ -4,7 +4,6 @@ CREATE TABLE Artifacts (
   description VARCHAR(255),
   function VARCHAR(255),
   safetyLevel VARCHAR(255) NOT NULL,
-    price real,
   dateModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
