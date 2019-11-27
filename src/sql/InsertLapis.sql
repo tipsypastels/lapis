@@ -21,7 +21,7 @@ INSERT INTO Artifacts VALUES(1019, "Magic whistle", "Controls animals.", "Contro
 INSERT INTO Artifacts VALUES(1020, "Healing tea", "Your cure for everything. Just heat it up for improving its taste. Effective in healing wounds, pains and fever.", "Improves health.", "safe", 75, "2018-07-20 00:00:01");
 
 
-INSERT INTO Experiments VALUES(2221, "Invisibility potion on living and non-living things,", "A potion can be consumed by living beings but how to use same potion for inanimate objects?");
+INSERT INTO Experiments VALUES(2221, "Invisibility potion on living and non-living things.", "A potion can be consumed by living beings but how to use same potion for inanimate objects? A human tester used in this experiment ingested the potion and it worked fine. The potion was poured on the inanimate object, a rubik's cube, it did not disappear. Then the same object was soaked in the potion abd it worked! Thus, the potion works when ingested for living beings but to make non living objects invisible, they need to be soaked in it. The objects remain invisible until they completely dry out.");
 INSERT INTO Experiments VALUES(2222, "Can a mirror be only used on humans?", "Related to consciousness which is obvious in humans compared to that in animals");
 INSERT INTO Experiments VALUES(2223, "Testing Pensieve", "Testing the artifact and measuring the duration of memories stored");
 INSERT INTO Experiments VALUES(2224, "Mirror mirror, what do you recall?", "Using hypnotic mirror to obtain memories that are present in mind subconsciously");
