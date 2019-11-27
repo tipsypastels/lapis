@@ -8,17 +8,17 @@ INSERT INTO Artifacts VALUES (1006, "Love Antidote", "Love Potion causing proble
 INSERT INTO Artifacts VALUES (1007, "Anti-Aging Soap Bar", "Take a bath of a lifetime (literally!) because you won't age at all after that! Use this soap twice a week, using it more often causes side effects!", "Anti-Aging properties", "safe", 2500, "2011-12-25 00:00:01");
 INSERT INTO Artifacts VALUES (1008, "Truth Perfume", "Liars Beware! Once you spray it, you can't hide the truth.This makes the person more honest even after the effects fade away. A great tool for detectives.", "Truth detector", "safe", 4000, "2016-11-02 00:00:01"); 
 INSERT INTO Artifacts VALUES(1009, "Wish Ring", "You can make three wishes and no more. Just bury it in earth after using it thrice, otherwise, your wishes will become opposite of what you expect.", "Fulfills wishes.", "safe", 5500, "2014-08-08 00:00:01");
-INSERT INTO Artifacts VALUES(1010, "Sleeping Potion", "Forget all your worries and sleep!", "Helps in sleeping.", "safe", 1475, "2014-11-18 00:00:01");
-INSERT INTO Artifacts VALUES(1011, "Feel Good Potion", "Ward off all the negative energies.", "Cleanses your aura.", "safe", 600, "2014-07-21 00:00:01");
-INSERT INTO Artifacts VALUES(1012, "Moon Amulet", "Keep calm and wear the amulet!", "Induces calmness.", "safe", 1499, "2014-02-11 00:00:01");
-INSERT INTO Artifacts VALUES(1013, "Book of Spells", "We got all kinds of spells for you!", "miscellaneous", "moderatelySafe", 500, "2014-02-11 00:00:01");
-INSERT INTO Artifacts VALUES(1014, "Map of hidden treasures", "Go out and explore!", "miscellaneous", "safe", 330, "2019-05-15 00:00:01");
-INSERT INTO Artifacts VALUES(1015, "The void", "Your storage solution for all the magical stuff!", "Provides incredible space for storage.", 1399, "safe", "2013-04-06 00:00:01");
-INSERT INTO Artifacts VALUES(1016, "Shield Amulet", "Throws away all the curses put on you.", "Shields the wearer.", "safe", 250, "2013-10-10 00:00:01");
-INSERT INTO Artifacts VALUES(1017, "The Antidote", "Makes every poison ineffective.", "Neutralizes poisons.", "safe", 111, "2003-11-11 00:00:01");
-INSERT INTO Artifacts VALUES(1018, "Crystal of Illusions", "Makes the seer lose their senses.", "Produces hallucinations.", "dangerous", 399, "2014-12-07 00:00:01");
-INSERT INTO Artifacts VALUES(1019, "Magic whistle", "Controls animals.", "Controls animals.", "moderatelySafe", 150, "2010-01-14 00:00:01");
-INSERT INTO Artifacts VALUES(1020, "Healing tea", "Your cure for everything.", "Improves health.", "safe", 75, "2018-07-20 00:00:01");
+INSERT INTO Artifacts VALUES(1010, "Sleeping Potion", "Forget all your worries and sleep! Gives you a complete 8 hour sleep and removes exhaustion. Just have a sip and sleep. Beware! Do not have too much!", "Helps in sleeping.", "safe", 1475, "2014-11-18 00:00:01");
+INSERT INTO Artifacts VALUES(1011, "Feel Good Potion", "Ward off all the negative energies. Makes you energetic and fills your brain with positive thoughts. Just a tablespoon of it will make your day!", "Cleanses your aura.", "safe", 600, "2014-07-21 00:00:01");
+INSERT INTO Artifacts VALUES(1012, "Moon Amulet", "Keep calm and wear the amulet! Helpful for all the night owls who have trouble sleeping. This does not make you sleepy, it just gets rid of your worries and anxieties.", "Induces calmness.", "safe", 1499, "2014-02-11 00:00:01");
+INSERT INTO Artifacts VALUES(1013, "Book of Spells", "We got all kinds of spells for you! Conatins white spells and forbidden black spells. Chant the spells twice and store it away from sunlight.", "miscellaneous", "moderatelySafe", 500, "2014-02-11 00:00:01");
+INSERT INTO Artifacts VALUES(1014, "Map of hidden treasures", "Go out and explore! You never know what precious thing you would find! This is way cooler than Pokemon go.", "miscellaneous", "safe", 330, "2019-05-15 00:00:01");
+INSERT INTO Artifacts VALUES(1015, "The void", "Your storage solution for all the magical stuff! Cover it with a black bag to avoid losing items. Make sure to sort it to avoid clutter.", "Provides incredible space for storage.", 1399, "safe", "2013-04-06 00:00:01");
+INSERT INTO Artifacts VALUES(1016, "Shield Amulet", "Throws away all the curses put on you. Wear it everyday to ward off evil. Keep the amulet clean to preserve its energy.", "Shields the wearer.", "safe", 250, "2013-10-10 00:00:01");
+INSERT INTO Artifacts VALUES(1017, "The Antidote", "Makes every poison ineffective. Just a spoonful of the antidote will neutralize even the deadliest of the poisons. Starts its effect as soon as consumed.", "Neutralizes poisons.", "safe", 111, "2003-11-11 00:00:01");
+INSERT INTO Artifacts VALUES(1018, "Crystal of Illusions", "Makes the seer lose their senses. Look through it while facing light. Rub it with a black cloth to remove the hallucinations.", "Produces hallucinations.", "dangerous", 399, "2014-12-07 00:00:01");
+INSERT INTO Artifacts VALUES(1019, "Magic whistle", "Controls animals.", "Controls animals. If an animal gets out of control and starts attacking, use this whistle to calm it down and to obey you.", "moderatelySafe", 150, "2010-01-14 00:00:01");
+INSERT INTO Artifacts VALUES(1020, "Healing tea", "Your cure for everything. Just heat it up for improving its taste. Effective in healing wounds, pains and fever.", "Improves health.", "safe", 75, "2018-07-20 00:00:01");
 
 
 INSERT INTO Experiments VALUES(2221, "Invisibility potion on living and non-living things,", "A potion can be consumed by living beings but how to use same potion for inanimate objects?");
