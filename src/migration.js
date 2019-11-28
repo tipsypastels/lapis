@@ -12,7 +12,13 @@ export default async function migration(database) {
 
   for (let name of Object.keys(TABLES)) {
     const columns = TABLES[name];
-    await database.run(`DROP TABLE ${name}`).catch(console.error);
+    await database.run(`DROP TABLE ${name}`).catch(e => {
+      if (/does not exist/.match(e.message)) {
+        return;
+      }
+
+      console.error(e);
+    });
 
     const sql = `CREATE TABLE ${name} (${columns})`;
 
