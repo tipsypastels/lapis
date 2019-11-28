@@ -6,6 +6,11 @@ Make sure you have `node`, `git`, and `yarn` installed on your system. If you're
 
 Download this project from git using `git clone https://github.com/tipsypastels/lapis`. Then, move into the directory in your terminal using `cd lapis`.
 
+If this is the first time you're installing this project, run the following commands to install global dependencies.
+`yarn global add windows-build-tools`
+`yarn global add node-gyp`
+`yarn global add bcrypt`
+
 Next, run `yarn install`. This will download Koa.js and other packages. Once that's done, you're good - run `yarn start` to start lapis. This will start the server and tell you how to proceed.
 
 ## How to develop
