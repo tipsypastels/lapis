@@ -5,14 +5,15 @@ import hbs from 'koa-hbs-renderer';
 import serve from 'koa-static';
 import mount from 'koa-mount';
 import body from 'koa-body';
+import jwt from 'koa-jwt';
 import sqlite3 from 'sqlite3-promisify';
 import migration from './migration';
+import jsonwebtoken from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 const app = new Koa();
 const router = new Router();
 const database = new sqlite3('./database.sqlite');
-
-migration(database);
 
 app.use(body({
   multipart: true,
@@ -28,29 +29,128 @@ app.use(hbs({
   }
 }));
 
-/**
- * This is an example of a GET page - which means any page that the user can directly navigate to in a browser. GET pages usually involve querying the database, and then rendering a particular template - in this case "index" which corresponds to the index.hbs file in the views folder.
- * 
- * ctx.render is a function that takes the name of a template, and the data that should be passed to that template. In this case we are passing the list of artifacts that we queried, and a title string.
- */
-router.get('/', async ctx => {
-  const artifacts = await database.all(`
-    SELECT * FROM artifacts
-  `);
+app.use(mount('/static', serve('./static')));
 
-  console.log(artifacts);
-  await ctx.render('artifacts', { artifacts, title: 'Lapis' });
+app.use((ctx, next) => {
+  return next().catch(err => {
+    if (401 === err.status) {
+      ctx.redirect('/login');
+    } else {
+      throw err;
+    }
+  });
 });
 
-/**
- * This is an example of a POST route. POST routes are not something you directly navigate to in your browser - think of them as places that handle the results of various user input that gets sent to the server. For example, this route handles creating a new artifact based on the data the user submitted.
- * 
- * Because POST routes are not pages, they don't need to display data. Instead, they usually create or modify existing data, then redirect the user to a page. In this case we create an artifact, and then redirect the user to that artifact's page.
- * 
- * The data submitted by the user can be found on the ctx.request.body object. We use object destructuring at the beginning of this function to extract them into unique variables.
- */
+app.use(async (ctx, next) => {
+  const login = ctx.cookies.get('lapisLogin');
+  if (login) {
+    const session = jsonwebtoken.verify(login, 'whatever');
+    if (!session) {
+      return;
+    }
+
+    const user = await database.get(`
+      select 
+        id, name, role, role = 'admin' as isAdmin 
+      from 
+        users 
+      where 
+        id = ?
+    `, [session.id]);
+
+    ctx.user = user;
+  }
+
+  return await next();
+});
+
+app.use(jwt({ secret: 'whatever', cookie: 'lapisLogin' })
+  .unless({ path: [/^\/(?:login|static)/] }));
+
+router.get('/login', async ctx => {
+  if (ctx.user) {
+    ctx.redirect('/');
+  }
+
+  await ctx.render('login', { title: 'Authorization Required' });
+});
+
+router.post('/login', async ctx => {
+  const { name, password } = ctx.request.body;
+
+  if (!name || !password) {
+    return ctx.auth = 401;
+  }
+
+  console.log(ctx.request.body);
+
+  const user = await database.get(`
+    select id, passwordHash from users where name = ?
+  `, [name]);
+
+  if (!user) {
+    return ctx.auth = 401;
+  }
+
+  const authenticated = await bcrypt.compare(password, user.passwordHash);
+  console.log({ user, authenticated })
+  if (!authenticated) {
+    return ctx.auth = 401;
+  }
+
+  const token = jsonwebtoken.sign({ id: user.id }, 'whatever');
+  ctx.cookies.set('lapisLogin', token);
+  console.log(token);
+  ctx.redirect('/');
+});
+
+router.get('/', async ctx => {
+  const artifacts = await database.all(`
+    SELECT * FROM artifacts ORDER BY dateModified DESC
+  `);
+
+  await ctx.render('artifacts', { 
+    artifacts, 
+    title: 'Lapis Philosophae',
+    user: ctx.user,
+  });
+});
+
+router.get('/artifacts', ctx => ctx.redirect('/'));
+
+router.get('/artifacts/:id', async ctx => {
+  const { id } = ctx.params;
+  const artifact = await database.get(`
+    SELECT 
+      artifacts.*, 
+      COUNT(experiments.artifactID) as experimentsCount,
+      COUNT(craftable.artifactID) > 0 as craftable
+    FROM 
+      artifacts
+    LEFT JOIN
+      experiments
+    ON
+      experiments.artifactID = artifacts.id
+    LEFT JOIN
+      craftable
+    ON
+      craftable.artifactID = artifacts.id
+    WHERE 
+      artifacts.id = ?
+  `, [id]);
+
+  if (!artifact || !artifact.id) {
+    return ctx.status = 404;
+  }
+
+  await ctx.render('artifact', {
+    artifact,
+    title: artifact.name,
+    user: ctx.user,
+  });
+});
+
 router.post('/artifacts', async ctx => {
-  // extract the data submitted by the user
   const { 
     name, 
     description, 
@@ -59,7 +159,6 @@ router.post('/artifacts', async ctx => {
     dateModified
   } = ctx.request.body;
 
-  // save it into the database
   await database.run(`
     INSERT INTO
       artifacts(name, description, usage, safetyLevel, dateModified)
@@ -67,27 +166,194 @@ router.post('/artifacts', async ctx => {
       (?, ?, ?, ?, ?)
   `, [name, description, usage, safetyLevel, dateModified]);
 
-  // the id is autogenerated so we need to grab it
   const { id } = await database
     .get(`select last_insert_rowid() as id`);
 
-  // redirect to the new page of that artifact 
   ctx.redirect(`/artifacts/${id}`);
-
-  // 301 tells the browser that the artifact was created successfully
   ctx.status = 301;
 });
 
-/**
- * ADMIN - Query 1
- * Add new user
- */
+router.get('/artifacts/:artifactID/crafting', async ctx => {
+  const { artifactID } = ctx.params;
+  const artifact = await database.get(`
+    SELECT 
+      artifacts.*,
+      craftable.instructions
+    FROM
+      artifacts
+    LEFT JOIN
+      craftable
+    ON
+      artifacts.id = craftable.artifactID
+    WHERE
+      artifacts.id = ?
+  `, [artifactID]);
+
+  if (!artifact || !artifact.id) {
+    return ctx.status = 404;
+  }
+
+  const ingredients = await database.all(`
+    SELECT
+      ingredients.*
+    FROM
+      containing
+    LEFT JOIN
+      ingredients
+    ON
+      ingredients.id = containing.ingredientID
+    WHERE
+      containing.artifactID = ?
+  `, [artifactID]);
+
+  await ctx.render('crafting', {
+    artifact,
+    ingredients,
+    title: `${artifact.name} - Crafting`,
+    user: ctx.user,
+  });
+});
+
+router.get('/artifacts/:artifactID/experiments', async ctx => {
+  const { artifactID } = ctx.params;
+  const artifact = await database.get(`
+    SELECT * FROM artifacts WHERE id = ?
+  `, [artifactID]);
+
+  if (!artifact || !artifact.id) {
+    ctx.status = 404;
+  }
+
+  const experiments = await database.all(`
+    SELECT 
+      experiments.*, 
+      experiments.endDate IS NULL OR experiments.endDate = "" as ongoing
+    FROM
+      experiments
+    WHERE
+      experiments.artifactID = ?
+    ORDER BY
+      experiments.startDate DESC
+  `, [artifactID]);
+
+  for (let experiment of experiments) {
+    experiment.testers = await database.all(`
+      SELECT * FROM testersHave WHERE experimentID = ?
+    `, [experiment.id]);
+
+    experiment.runners = (await database.all(`
+      SELECT
+        users.name
+      FROM
+        run
+      LEFT JOIN
+        users
+      ON
+        run.userID = users.id
+      WHERE
+        run.experimentID = ?
+    `, [experiment.id])).map(n => n.name)
+                        .join(', ');
+  }
+
+  await ctx.render('experiments', {
+    artifact,
+    experiments,
+    title: `${artifact.name} - Experiments`,
+    user: ctx.user,
+  });
+});
+
+router.get('/artifacts/:id/experiments/new', async ctx => {
+  const { id } = ctx.params;
+  const artifact = await database.get(`
+    SELECT * FROM artifacts WHERE id = ?
+  `, [id]);
+
+  if (!artifact || !artifact.id) {
+    return ctx.status = 404;
+  }
+
+  await ctx.render('experimentsNew', {
+    artifact,
+    title: `${artifact.name} - Add Experiment`,
+    user: ctx.user,
+  });
+});
+
+router.post('/artifacts/:artifactID/experiments', async ctx => {
+  const { artifactID } = ctx.params;
+  const { 
+    research, 
+    description, 
+    startDate, 
+    endDate 
+  } = ctx.request.body;
+  
+  await database.run(`
+  INSERT INTO 
+    experiments(research, description, startDate, endDate, artifactID) 
+  VALUES 
+    (?, ?, ?, ?, ?)
+  `, [research, description, startDate, endDate, artifactID]);
+  
+  const { id } = await database
+  .get(`select last_insert_rowid() as id`);
+  
+  await database.run(`
+  INSERT INTO performedOn(artifactID, experimentID) VALUES (?, ?)
+  `, [artifactID, id]);
+  
+  let { collaborators } = ctx.request.body;
+  if (collaborators) {
+    collaborators = collaborators.trim().split(/\s*,\s*/);
+    const runners = new Set([ctx.user.id]);
+
+    for (const name of collaborators) {
+      const user = await database.get(`
+        SELECT id from users where name = ?
+      `, [name]);
+
+      if (!user) {
+        continue;
+      }
+
+      runners.add(user.id);
+    }
+
+    for (const userID of runners.values()) {
+      await database.run(`
+        INSERT INTO run VALUES (?, ?)
+      `, [userID, id]);
+    }
+  }
+
+  let testers = JSON.parse(ctx.request.body.testers);
+  if (testers.length > 0) {
+    testers = testers.filter(t => t.name);
+    const qmarks = new Array(testers.length)
+      .fill('(?, ?, ?, ?, ?)')
+      .join(', ');
+
+    const subs = testers.map(t => [id, ...Object.values(t)])
+      .flat(Infinity);
+
+    await database.run(`
+      INSERT INTO testersHave VALUES ${qmarks}
+    `, subs);
+  }
+
+  ctx.redirect(`/artifacts/${artifactID}/experiments`);
+});
+
 router.post('/users', async ctx => {
   const { 
     name, 
     role,
-    passwordHash
+    password
   } = ctx.request.body;
+
+  const passwordHash = await bcrypt.hash(password);
 
   await database.run(`
     INSERT INTO
@@ -103,10 +369,6 @@ router.post('/users', async ctx => {
   ctx.status = 301;
 });
 
-/**
- * ADMIN - Query 2
- * Delete User
- */
 router.post('/users/delete', async ctx => {
   const { id } = ctx.request.body;
 
@@ -119,11 +381,7 @@ router.post('/users/delete', async ctx => {
   ctx.status = 301;
 });
 
-/**
- * ADMIN - Query 3
- * View all the users
- */
-router.get('/', async ctx => {
+router.get('/users', async ctx => {
   const users = await database.all(`
     SELECT id, name, role 
     FROM users
@@ -133,10 +391,11 @@ router.get('/', async ctx => {
   await ctx.render('users', { users, title: 'Users' });
 });
 
-app.use(mount('/static', serve('./static')))
-   .use(router.routes())
+app.use(router.routes())
    .use(router.allowedMethods());
 
-app.listen(3000, () => {
+app.listen(3000, async() => {
   console.log('Lapis is running! Navigate to localhost:3000 in your browser.');
+
+  await migration(database);
 });

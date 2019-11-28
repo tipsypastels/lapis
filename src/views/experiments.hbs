@@ -1,0 +1,57 @@
+
+{{#if experiments.length}}
+  <a href="/artifacts/{{artifact.id}}/experiments/new">+ Add Experiment</a>
+  
+  {{#each experiments}}
+    <div class="experiment">
+      <div class="experiment__research">
+        {{research}}
+      </div>
+
+      <div class="experiment__performedAt">
+        Run by {{runners}} —
+
+        {{#if ongoing}}
+          {{startDate}} — Ongoing
+        {{else}}
+          {{startDate}} — {{endDate}}
+        {{/if}}
+      </div>
+
+      <div class="experiment__description">
+        {{description}}
+      </div>
+
+      {{#if testers.length}}
+        <div class="experiment__testers">
+          <div class="experiment__testers__label">
+            Testers involved in this experiment
+          </div>
+
+          <table class="tiger">
+            <tr>
+              <th>Name</th>
+              <th>Test Date</th>
+              <th>Phone Number</th>
+              <th>Address</th>
+            </tr>
+            {{#each testers}}
+              <tr>
+                <td>{{name}}</td>
+                <td>{{completionDate}}</td>
+                <td>{{phoneNumber}}</td>
+                <td>{{address}}</td>
+              </tr>
+            {{/each}}
+          </table>
+        </div>
+      {{/if}}
+    </div>
+  {{/each}}
+{{else}}
+  <section>
+    This artifact has no associated experiments. <a href="/artifacts/{{artifact.id}}/experiments/new">Add one!</a>
+  </section>
+{{/if}}
+
+<a href="/artifacts/{{artifact.id}}">← back to {{artifact.name}}</a>

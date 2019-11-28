@@ -1,0 +1,26 @@
+<p>
+  {{artifact.instructions}}
+</p>
+
+<table class="tiger">
+  <tr>
+    <th>Ingredient</th>
+    <th>Source</th>
+    <th>Colour</th>
+    <th>Smell</th>
+    <th>Status</th>
+    <th>State</th>
+  </tr>
+  {{#each ingredients}}
+    <tr>
+      <td><a href="/ingredients/{{id}}">{{name}}</a></td>
+      <td>{{source}}</td>
+      <td>{{color}}</td>
+      <td>{{smell}}</td>
+      <td>{{status}}</td>
+      <td>{{state}}</td>
+    </tr>
+  {{/each}}
+</table>
+
+<a href="/artifacts/{{artifact.id}}">← back to {{artifact.name}}</a>

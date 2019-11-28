@@ -1,0 +1,86 @@
+<script>
+  const TESTERS_ROW = `
+    <tr>
+      <td>
+        <input type="text" data-name="name" placeholder="Person Name" />
+      </td>
+      <td>
+        <input type="text" data-name="completionDate" placeholder="Trial Date" />
+      </td>
+      <td>
+        <input type="text" data-name="phoneNumber" placeholder="Phone Number" />
+      </td>
+      <td>
+        <input type="text" data-name="address" placeholder="Address" />
+      </td>
+    </tr>
+  `;
+
+  $(() => {
+    $('#testers table').append(TESTERS_ROW);
+
+    $('#add-testers').click(() => {
+      $('#add-testers').slideUp(200);
+      $('#testers').slideDown(200);
+    });
+
+    $('#add-row').click(() => {
+      $('#testers table').append(TESTERS_ROW);
+    });
+
+    $('#testers').on('keyup', 'input', () => {
+      const rows = [];
+
+      $('#testers tr').each(function() {
+        const row = {};
+
+        $(this).find('[data-name]').each(function() {
+
+          const val = $(this).val().trim();
+          if (val) {
+            row[this.dataset.name] = val;
+          }
+        });
+
+        if (Object.keys(row).length > 0) {
+          rows.push(row);
+        }
+      });
+
+      $('#testers-json').val(JSON.stringify(rows));
+    });
+  });
+</script>
+
+<form action="/artifacts/{{artifact.id}}/experiments" method="post">
+  <input type="hidden" name="artifactID" value={{artifact.id}} />
+  <input type="text" name="research" placeholder="What are you researching?" autofocus />
+  <textarea name="description" placeholder="Describe your results."></textarea>
+  <input type="text" name="collaborators" placeholder="Add the names of any collaborators (besides you). Seperate with commas." />
+  <input type="text" name="startDate" placeholder="Start of experiment date." />
+  <input type="text" name="endDate" placeholder="End of experiment date (Optional)." />
+
+  <div class="note">
+    <h4>
+      Testers
+    </h4>
+
+    <p id="add-testers">
+      Does your experiment involve human testers? Click here to register them.
+    </p>
+
+    <div id="testers" style="display: none">
+      <input type="hidden" id="testers-json" name="testers" value="[]" />
+
+      <table>
+
+      </table>
+
+      <div id="add-row" style="margin-bottom: 0.5rem">
+        + add row
+      </div>
+    </div>
+  </div>
+
+  <input type="submit" />
+</form>

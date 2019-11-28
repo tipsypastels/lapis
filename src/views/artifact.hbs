@@ -1,0 +1,30 @@
+<p>
+  {{artifact.description}}
+</p>
+
+<table class="tiger">
+  <tr>
+    <th>ID</th>
+    <th>Usage</th>
+    <th>Safety Level</th>
+    <th>Date Modified</th>
+    <th>Experiments</th>
+    <th>Craftable</th>
+  </tr>
+  <tr>
+    <td>{{artifact.id}}</td>
+    <td>{{artifact.usage}}</td>
+    <td>{{artifact.safetyLevel}}</td>
+    <td>{{artifact.dateModified}}</td>
+    <td><a href="/artifacts/{{artifact.id}}/experiments">{{artifact.experimentsCount}}</a></td>
+    <td>
+      {{#if artifact.craftable}}
+        <a href="/artifacts/{{artifact.id}}/crafting">Yes</a>
+      {{else}}
+        No
+      {{/if}}
+    </td>
+  </tr>
+</table>
+
+<a href="/">← back to artifacts list</a>

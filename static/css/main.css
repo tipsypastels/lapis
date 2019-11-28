@@ -1,3 +1,187 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Special+Elite&display=swap');
+
 body {
-  color: red;
+  background-image: url(/static/images/background.jpeg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  margin: 0;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  font-family: Open Sans;
+}
+
+.container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  margin-top: 6rem;
+  width: 900px;
+  max-width: 100%;
+}
+
+header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+header nav {
+  background-color: white;
+  padding: 0.5rem 1rem;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+main {
+  flex-grow: 1;
+  background-color: white;
+  padding: 1rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+main::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  width: 10px;
+  height: calc(100% + 20px);
+  background-color: #ddd;
+  z-index: 9999;
+  border-top-right-radius: 8px;
+}
+
+h1 {
+  font-family: Special Elite;
+  text-align: center;
+  border-bottom: 2px dashed black;
+  padding-bottom: 0.5rem;
+}
+
+
+input, textarea {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.note {
+  margin: 1rem 0;
+  padding: 1rem;
+  padding-bottom: 0.25rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 3px dashed #bbb;
+}
+
+.artifact {
+  margin-bottom: 1rem;
+}
+
+.artifact .artifact__name {
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.current-user {
+  margin-bottom: 1rem;
+}
+
+.current-user__name {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+th {
+  text-align: left;
+}
+
+td, th {
+  padding: 0.25rem;
+}
+
+table.tiger tr:nth-child(odd) {
+  background-color: #ddd;
+}
+
+h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  font-weight: 400;
+  border-bottom: 1px solid white;
+}
+
+section {
+  margin-bottom: 1rem;
+}
+
+.experiment {
+  margin-bottom: 1rem;
+  border-left: 4px solid black;
+  padding-left: 0.75rem;
+}
+
+.experiment .experiment__research {
+  font-size: 1.45rem;
+  font-weight: bold;
+}
+
+.experiment .experiment__performedAt {
+  color: #777;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.experiment .experiment__testers {
+  margin-top: 1rem;
+}
+
+.experiment .experiment__testers .experiment__testers__label {
+  font-size: 1.16rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="date"] {
+  font-family: Open Sans;
+  display: block;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  outline: none !important;
+}
+
+textarea {
+  resize: none;
+  height: 10rem;
+}
+
+.note td:not(:first-child) input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.note td:not(:last-child) input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.note td {
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
 }
