@@ -1,3 +1,26 @@
+{{#if withSafety}}
+  <section>
+    <a href="/">← show all artifacts</a>
+  </section>
+{{else}}
+  <section>
+    <form action="/artifactsWithSafety" method="post">
+      <label>
+        Filter by safety level
+      </label>
+
+      <select name="safetyLevel">
+        <option selected value="all">All</option>
+        <option value="safe">Safe</option>
+        <option value="moderatelySafe">Moderately Safe</option>
+        <option value="dangerous">Dangerous</option>
+      </select>
+
+      <input type="submit" value="Filter">
+    </form>
+  </section>
+{{/if}}
+
 {{#each artifacts}}
   <div class="artifact">
     <a class="artifact__name" href="/artifacts/{{id}}">

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import TABLES from './sql/tables';
 
-const MIGRATE = true;
+const MIGRATE = false;
 
 export default async function migration(database) {
   if (!MIGRATE) {
@@ -13,7 +13,7 @@ export default async function migration(database) {
   for (let name of Object.keys(TABLES)) {
     const columns = TABLES[name];
     await database.run(`DROP TABLE ${name}`).catch(e => {
-      if (/does not exist/.match(e.message)) {
+      if (/no such table/.exec(e.message)) {
         return;
       }
 

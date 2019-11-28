@@ -27,20 +27,25 @@ INSERT INTO Experiments VALUES(2224, "Mirror mirror, what do you recall?", "Usin
 INSERT INTO Experiments VALUES(2225, "Getting the truth out of you.", "Its time to reveal the truth!", "2016-11-25 00:00:01", NULL, 1002);
 
 
-INSERT INTO Ingredients VALUES(1111, "Glass Flower", "Austria", "Transparent", "Minty and Tangy", "common", "solid");
-INSERT INTO Ingredients VALUES(1112, "Ammonia", "United States", "Transparent", "Decaying fish", "common", "liquid");
-INSERT INTO Ingredients VALUES(1113, "Dragon Scales", "Taiwan", "Olive Green", "Flesh", "legendary", "solid");
-INSERT INTO Ingredients VALUES(1114, "Rose", "England", "Pink", "Rosy", "common", "solid");
-INSERT INTO Ingredients VALUES(1115, "Unicorn horn", "Scotland", "White", "Candy", "legendary", "solid");
-INSERT INTO Ingredients VALUES(1116, "Vampire's Tooth", "Ukraine", "Black", "Bloody", "rare", "solid");
-INSERT INTO Ingredients VALUES(1117, "Yew Tree root", "Canada", "Brown", "Earthy", "common", "solid");
-INSERT INTO Ingredients VALUES(1118, "Toad Skeleton", "Bahrain", "White", "Smokey", "common", "solid");
-INSERT INTO Ingredients VALUES(1119, "Skunk Hair", "Bolivia", "Black", "Rotten eggs", "common", "solid");
-INSERT INTO Craftable VALUES(1010, "Add lavendar to brewing mint water. Add a pinch of moonstone sand. Put it in a bottle and spray it before going to bed.");
-INSERT INTO Craftable VALUES(1011, "Add two cups of red wine in a cauldron and boil it with willow tree bark. Stir it clockwise and add seven cloves.");
-INSERT INTO Craftable VALUES(1017, "Bring water to boil. Add Aconitum petals and leave it to boil for another 10 minutes. Add 2 mistletoe berries and leave it to cool down. Strain the mixture into a vial.");
-INSERT INTO Craftable VALUES(1020, "Add witch hazel into rose water and simmer it in a cauldron. Add a teaspoon of honey and chamomile petals. Brew for 10 minutes and strain it for immediate consumption or store.");
+-- INSERT INTO Ingredients VALUES(1111, "Glass Flower", "Austria", "Transparent", "Minty and Tangy", "common", "solid");
+-- INSERT INTO Ingredients VALUES(1112, "Ammonia", "United States", "Transparent", "Decaying fish", "common", "liquid");
+-- INSERT INTO Ingredients VALUES(1113, "Dragon Scales", "Taiwan", "Olive Green", "Flesh", "legendary", "solid");
+-- INSERT INTO Ingredients VALUES(1114, "Rose", "England", "Pink", "Rosy", "common", "solid");
+-- INSERT INTO Ingredients VALUES(1115, "Unicorn horn", "Scotland", "White", "Candy", "legendary", "solid");
+-- INSERT INTO Ingredients VALUES(1116, "Vampire's Tooth", "Ukraine", "Black", "Bloody", "rare", "solid");
+-- INSERT INTO Ingredients VALUES(1117, "Yew Tree root", "Canada", "Brown", "Earthy", "common", "solid");
+-- INSERT INTO Ingredients VALUES(1118, "Toad Skeleton", "Bahrain", "White", "Smokey", "common", "solid");
+-- INSERT INTO Ingredients VALUES(1119, "Skunk Hair", "Bolivia", "Black", "Rotten eggs", "common", "solid");
 
+INSERT INTO Craftable VALUES(1010, "Add lavendar to brewing mint water. Add a pinch of moonstone sand. Put it in a bottle and spray it before going to bed.", "Lavendar, Mint Water, Moonstone Sand");
+INSERT INTO Craftable VALUES(1011, "Add two cups of red wine in a cauldron and boil it with willow tree bark. Stir it clockwise and add seven cloves.", "Red Wine, Willow Tree Bark, Cloves");
+INSERT INTO Craftable VALUES(1017, "Bring water to boil. Add Aconitum petals and leave it to boil for another 10 minutes. Add 2 mistletoe berries and leave it to cool down. Strain the mixture into a vial.", "Aconitum Petals, Mistletoe Berries");
+INSERT INTO Craftable VALUES(1020, "Add witch hazel into rose water and simmer it in a cauldron. Add a teaspoon of honey and chamomile petals. Brew for 10 minutes and strain it for immediate consumption or store.", "Witch Hazel, Rose Water, Honey, Chamomile Petals");
+INSERT INTO Craftable VALUES(1001, "Gently pluck the petals of Glass Flower and put them with a mixture of water and liquid ammonia and heat till the mixture starts bubbling. Add dragon scales and let it cool.", "Glass Flower, Liquid Ammonia, Dragon Scales");
+INSERT INTO Craftable VALUES(1004, "Crush the petals of Rose and put into a cauldron. Add powdered Unicorn horn and wild berries with it. Brew with freshly fetched creek water till the colour turns red.", "Rose Petals, Unicorn Horn, Wild Berries, Creek Water");
+INSERT INTO Craftable VALUES(1006, "To undo the love, add thorns, skunk hair, milky sap from weeping fig into mortar and crush them together.", "Thorns, Skunk Hair, Milky Sap from Weeping Fig, Mortar");
+INSERT INTO Craftable VALUES(1007, "Add lye and oil together and heat them in a cauldron. Crush a vampire's tooth into the mixture. Add fresh clay from a river and add a 500 year old root of yew tree and sandalwood. Cool the mixture into cake form.", "Lye, Oil, Vampire's Tooth, Fresh Clay, 500 Year Old Root of Yew Tree, Sandalwood");
+INSERT INTO Craftable VALUES(1008, "On a full moon day, get the pulp of cow's tongue plant and add into it a spoonful of powdered toad skeleton. Add lavender for scent and brew it in water. Strain it after boiling.", "Cow's Tongue Plant Pulp, Powdered Toad Skeleton, Lavendar");
 
 INSERT INTO Users VALUES(1101, "Kira Fowler", "alchemist", '$2b$04$Y3Kajq.brUxubbZTON5V7u59tPmpORwSGQBiM3yPW6UwjZlT1fIeu');
 INSERT INTO Users VALUES(1102, "Nathan Reed", "admin", '$2b$04$Y3Kajq.brUxubbZTON5V7u59tPmpORwSGQBiM3yPW6UwjZlT1fIeu');
@@ -48,19 +53,13 @@ INSERT INTO Users VALUES(1103, "Tristan Summers", "sorcerer", '$2b$04$Y3Kajq.brU
 INSERT INTO Users VALUES(1104, "Crystal Lou", "thaumaturge", '$2b$04$Y3Kajq.brUxubbZTON5V7u59tPmpORwSGQBiM3yPW6UwjZlT1fIeu');
 INSERT INTO Users VALUES(1105, "Omar Baird", "conjurer", '$2b$04$Y3Kajq.brUxubbZTON5V7u59tPmpORwSGQBiM3yPW6UwjZlT1fIeu');
 
-
-INSERT INTO Craftable VALUES(1001, "Gently pluck the petals of Glass Flower and put them with a mixture of water and liquid ammonia and heat till the mixture starts bubbling. Add dragon scales and let it cool.");
-INSERT INTO Craftable VALUES(1004, "Crush the petals of Rose and put into a cauldron. Add powdered Unicorn horn and wild berries with it. Brew with freshly fetched creek water till the colour turns red.");
-INSERT INTO Craftable VALUES(1006, "To undo the love, add thorns, skunk hair, milky sap from weeping fig into mortar and crush them together.");
-INSERT INTO Craftable VALUES(1007, "Add lye and oil together and heat them in a cauldron. Crush a vampire's tooth into the mixture. Add fresh clay from a river and add a 500 year old root of yew tree and sandalwood. Cool the mixture into cake form.");
-INSERT INTO Craftable VALUES(1008, "On a full moon day, get the pulp of cow's tongue plant and add into it a spoonful of powdered toad skeleton. Add lavender for scent and brew it in water. Strain it after boiling.");
-INSERT INTO Ingredients VALUES(1120, "Aconitum", "USA", "Purple", "No scent", "common", "solid");
-INSERT INTO Ingredients VALUES(1121, "Moonstone sand", "Bulgaria", "White", "Soft talcum scent", "rare", "solid");
-INSERT INTO Ingredients VALUES(1122, "Willow tree bark", "Canada", "Brown", "murky", "common", "solid");
-INSERT INTO Ingredients VALUES(1123, "Silverweed", "Canada", "Yellow", "Pineapple", "common", "liquid");
-INSERT INTO Ingredients VALUES(1124, "Myrrh resin", "Somalia", "Brown", "woody and pungent", "common", "solid");
-INSERT INTO Ingredients VALUES(1125, "Passion fruit juice", "Colombia", "Yellow", "Fruity", "common", "liquid");
-INSERT INTO Ingredients VALUES(1126, "Peacock feathers", "India", "Multicolored", "No scent", "rare", "solid");
+-- INSERT INTO Ingredients VALUES(1120, "Aconitum", "USA", "Purple", "No scent", "common", "solid");
+-- INSERT INTO Ingredients VALUES(1121, "Moonstone sand", "Bulgaria", "White", "Soft talcum scent", "rare", "solid");
+-- INSERT INTO Ingredients VALUES(1122, "Willow tree bark", "Canada", "Brown", "murky", "common", "solid");
+-- INSERT INTO Ingredients VALUES(1123, "Silverweed", "Canada", "Yellow", "Pineapple", "common", "liquid");
+-- INSERT INTO Ingredients VALUES(1124, "Myrrh resin", "Somalia", "Brown", "woody and pungent", "common", "solid");
+-- INSERT INTO Ingredients VALUES(1125, "Passion fruit juice", "Colombia", "Yellow", "Fruity", "common", "liquid");
+-- INSERT INTO Ingredients VALUES(1126, "Peacock feathers", "India", "Multicolored", "No scent", "rare", "solid");
 
 
 INSERT INTO AuthoredBy VALUES(1001, 1101);

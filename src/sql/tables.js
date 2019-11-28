@@ -16,15 +16,6 @@ export default {
     artifactID INTEGER NOT NULL,
     FOREIGN KEY (artifactID) references Artifacts (id)
   `,
-  Ingredients: `
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(255) NOT NULL,
-    source VARCHAR(255) NOT NULL,
-    color VARCHAR(255),
-    smell VARCHAR(255),
-    status VARCHAR(255) NOT NULL DEFAULT 'common',
-    state VARCHAR(255) NOT NULL DEFAULT 'solid'
-  `,
   Users: `
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL,
@@ -33,14 +24,15 @@ export default {
   `,
   Craftable: `
     artifactID INTEGER PRIMARY KEY AUTOINCREMENT,
-    instructions VARCHAR(255) NOT NULL
+    instructions VARCHAR(255) NOT NULL,
+    ingredients VARCHAR(255)
   `,
   AuthoredBy: `
     artifactID INTEGER,
-    experimentID INTEGER,
-    PRIMARY KEY(artifactID, experimentID),
+    userID INTEGER,
+    PRIMARY KEY(artifactID, userID),
     FOREIGN KEY (artifactID) REFERENCES Artifacts (id),
-    FOREIGN KEY (experimentID) REFERENCES Experiments (id)
+    FOREIGN KEY (userID) REFERENCES Users (id)
   `,
   Run: `
     userID INTEGER,

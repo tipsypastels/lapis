@@ -185,3 +185,7 @@ a {
   text-decoration: none;
   color: blue;
 }
+
+table.full {
+  width: 100%;
+}

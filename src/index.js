@@ -82,8 +82,6 @@ router.post('/login', async ctx => {
     return ctx.auth = 401;
   }
 
-  console.log(ctx.request.body);
-
   const user = await database.get(`
     select id, passwordHash from users where name = ?
   `, [name]);
@@ -100,8 +98,12 @@ router.post('/login', async ctx => {
 
   const token = jsonwebtoken.sign({ id: user.id }, 'whatever');
   ctx.cookies.set('lapisLogin', token);
-  console.log(token);
   ctx.redirect('/');
+});
+
+router.get('/logout', async ctx => {
+  ctx.cookies.set('lapisLogin', null);
+  ctx.redirect('/login');
 });
 
 router.get('/', async ctx => {
@@ -117,6 +119,27 @@ router.get('/', async ctx => {
 });
 
 router.get('/artifacts', ctx => ctx.redirect('/'));
+
+router.post('/artifactsWithSafety', async ctx => {
+  const { safetyLevel } = ctx.request.body;
+
+  if (safetyLevel === 'all') {
+    return ctx.redirect('/');
+  }
+
+  const artifacts = await database.all(`
+    SELECT * FROM artifacts 
+    WHERE safetyLevel = ? 
+    ORDER BY dateModified DESC
+  `, [safetyLevel]);
+
+  await ctx.render('artifacts', {
+    artifacts,
+    title: `Artifacts - ${safetyLevel}`,
+    user: ctx.user,
+    withSafety: true,
+  })
+});
 
 router.get('/artifacts/:id', async ctx => {
   const { id } = ctx.params;
@@ -143,8 +166,22 @@ router.get('/artifacts/:id', async ctx => {
     return ctx.status = 404;
   }
 
+  const authorNames = (await database.all(`
+    SELECT 
+      users.name 
+    FROM 
+      authoredBy
+    LEFT JOIN
+      users
+    ON
+      authoredBy.userID = users.id 
+    WHERE 
+      artifactID = ?
+  `, [artifact.id])).map(u => u.name).join(', ');
+
   await ctx.render('artifact', {
     artifact,
+    authorNames,
     title: artifact.name,
     user: ctx.user,
   });
@@ -178,7 +215,7 @@ router.get('/artifacts/:artifactID/crafting', async ctx => {
   const artifact = await database.get(`
     SELECT 
       artifacts.*,
-      craftable.instructions
+      craftable.*
     FROM
       artifacts
     LEFT JOIN
@@ -193,22 +230,8 @@ router.get('/artifacts/:artifactID/crafting', async ctx => {
     return ctx.status = 404;
   }
 
-  const ingredients = await database.all(`
-    SELECT
-      ingredients.*
-    FROM
-      containing
-    LEFT JOIN
-      ingredients
-    ON
-      ingredients.id = containing.ingredientID
-    WHERE
-      containing.artifactID = ?
-  `, [artifactID]);
-
   await ctx.render('crafting', {
     artifact,
-    ingredients,
     title: `${artifact.name} - Crafting`,
     user: ctx.user,
   });
@@ -389,6 +412,68 @@ router.get('/users', async ctx => {
 
   console.log(users);
   await ctx.render('users', { users, title: 'Users' });
+});
+
+router.get('/stats', async ctx => {
+  const { 
+    artifactsCount,
+    craftablesCount, 
+    usersCount, 
+    experimentsCount 
+  } = await database.get(`
+    SELECT 
+      (SELECT COUNT(*) FROM artifacts) as artifactsCount,
+      (SELECT COUNT(*) FROM craftable) as craftablesCount,
+      (SELECT COUNT(*) FROM users) as usersCount,
+      (SELECT COUNT(*) FROM experiments) as experimentsCount
+  `);
+
+  const { averageExperimentsPerArtifact } = await database.get(`
+    SELECT AVG(experimentsCount) as averageExperimentsPerArtifact
+    FROM (
+      SELECT artifactID, COUNT(id) as experimentsCount
+      FROM experiments
+      GROUP BY artifactID
+    )
+  `);
+
+  const { averageArtifactAuthorshipsPerUser } = await database.get(`
+    SELECT AVG(artifactCount) as averageArtifactAuthorshipsPerUser
+    FROM (
+      SELECT userID, COUNT(artifactID) as artifactCount
+      FROM authoredBy
+      GROUP BY userID
+    )
+  `);
+
+  const { numberOfArticlesWrittenByEveryone } = await database.get(`
+      SELECT COUNT(*)
+      AS numberOfArticlesWrittenByEveryone
+      FROM artifacts a
+      WHERE NOT EXISTS (
+        SELECT u.id
+        FROM users u
+        WHERE NOT EXISTS (
+          SELECT x.artifactID
+          FROM authoredBy x
+          WHERE x.artifactID = a.id
+          AND x.userID = u.id
+        )
+      )
+  `);
+
+    await ctx.render('stats', {
+      artifactsCount,
+      craftablesCount,
+      usersCount,
+      experimentsCount,
+      averageExperimentsPerArtifact,
+      averageArtifactAuthorshipsPerUser,
+      numberOfArticlesWrittenByEveryone,
+      
+      title: 'Stats',
+      user: ctx.user,
+    });
 });
 
 app.use(router.routes())
