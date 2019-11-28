@@ -1,0 +1,21 @@
+<form action="/artifacts" method="post">
+  <h3>Basic Information</h3>
+
+  <input required type="text" name="name" placeholder="Name of Artifact" />
+  <input type="text" name="usage" placeholder="Usage Information" />
+  <textarea required name="description" placeholder="Description of Artifact"></textarea>
+  <input type="text" name="collaborators" placeholder="Names of any research collaborators (excluding you). Seperate with commas.">
+
+  <h3>Safety Information</h3>
+
+  <label><input type="radio" name="safetyLevel" value="safe"> Safe</label>
+  <label><input type="radio" name="safetyLevel" value="moderatelySafe"> Moderately Safe</label>
+  <label><input type="radio" name="safetyLevel" value="dangerous"> Dangerous</label>
+
+  <h3>(Optional) Crafting Information</h3>
+
+  <input type="text" name="ingredients" placeholder="Crafting Ingredients. Seperate with commas.">
+  <input type="text" name="instructions" placeholder="Crafting Instructions">
+
+  <input type="submit" />
+</form>

@@ -1,0 +1,30 @@
+<ul>
+  {{#each users}}
+    <li>
+      {{name}} (<strong>{{role}}</strong>)
+
+      {{#if canEdit}}
+        <a href="/users/{{id}}/edit">
+          Edit
+        </a>
+      {{/if}}
+    </li>
+  {{/each}}
+</ul>
+
+{{#if isAdmin}}
+  <h3>Create User</h3>
+
+  <form method="post" action="/users">
+    <input required type="text" name="name" placeholder="Name">
+    <select required name="role">
+      <option value="admin">Admin</option>
+      <option value="alchemist">Alchemist</option>
+      <option value="sorcerer">Sorcerer</option>
+      <option value="thaumaturge">Thaumaturge</option>
+      <option value="conjurer">Conjurer</option>
+    </select>
+    <input required type="text" name="password" placeholder="Password">
+    <input type="submit">
+  </form>
+{{/if}}

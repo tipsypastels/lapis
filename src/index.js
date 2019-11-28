@@ -141,6 +141,13 @@ router.post('/artifactsWithSafety', async ctx => {
   })
 });
 
+router.get('/artifacts/new', async ctx => {
+  await ctx.render('artifactsNew', { 
+    title: 'Create Artifact',
+    user: ctx.user 
+  });
+});
+
 router.get('/artifacts/:id', async ctx => {
   const { id } = ctx.params;
   const artifact = await database.get(`
@@ -193,18 +200,48 @@ router.post('/artifacts', async ctx => {
     description, 
     usage, 
     safetyLevel,
-    dateModified
+    ingredients,
+    instructions,
+    collaborators
   } = ctx.request.body;
 
   await database.run(`
     INSERT INTO
-      artifacts(name, description, usage, safetyLevel, dateModified)
+      artifacts(name, description, usage, safetyLevel)
     VALUES
-      (?, ?, ?, ?, ?)
-  `, [name, description, usage, safetyLevel, dateModified]);
+      (?, ?, ?, ?)
+  `, [name, description, usage, safetyLevel]);
 
   const { id } = await database
     .get(`select last_insert_rowid() as id`);
+
+  if (instructions && ingredients) {
+    await database.run(`
+      INSERT INTO Craftable VALUES (?, ?, ?)
+    `, [id, instructions, ingredients]);
+  }
+
+  const runners = new Set([ctx.user.id]);
+
+  if (collaborators) {
+    for (const name of collaborators.trim().split(/\s*,\s*/)) {
+      const user = await database.get(`
+        SELECT id from users where name = ?
+      `, [name]);
+
+      if (!user) {
+        continue;
+      }
+
+      runners.add(user.id);
+    }
+  }
+
+  for (const userID of runners.values()) {
+    await database.run(`
+      INSERT INTO authoredBy VALUES (?, ?)
+    `, [id, userID]);
+  }
 
   ctx.redirect(`/artifacts/${id}`);
   ctx.status = 301;
@@ -327,10 +364,11 @@ router.post('/artifacts/:artifactID/experiments', async ctx => {
   INSERT INTO performedOn(artifactID, experimentID) VALUES (?, ?)
   `, [artifactID, id]);
   
+  const runners = new Set([ctx.user.id]);
+
   let { collaborators } = ctx.request.body;
   if (collaborators) {
     collaborators = collaborators.trim().split(/\s*,\s*/);
-    const runners = new Set([ctx.user.id]);
 
     for (const name of collaborators) {
       const user = await database.get(`
@@ -343,12 +381,12 @@ router.post('/artifacts/:artifactID/experiments', async ctx => {
 
       runners.add(user.id);
     }
+  }
 
-    for (const userID of runners.values()) {
-      await database.run(`
-        INSERT INTO run VALUES (?, ?)
-      `, [userID, id]);
-    }
+  for (const userID of runners.values()) {
+    await database.run(`
+      INSERT INTO run VALUES (?, ?)
+    `, [userID, id]);
   }
 
   let testers = JSON.parse(ctx.request.body.testers);
@@ -376,7 +414,8 @@ router.post('/users', async ctx => {
     password
   } = ctx.request.body;
 
-  const passwordHash = await bcrypt.hash(password);
+  const salt = await bcrypt.genSalt(1);
+  const passwordHash = await bcrypt.hash(password, salt);
 
   await database.run(`
     INSERT INTO
@@ -385,15 +424,16 @@ router.post('/users', async ctx => {
       (?, ?, ?)
   `, [name, role, passwordHash]);
 
-  const { id } = await database
-    .get(`select last_insert_rowid() as id`);
-
-  ctx.redirect(`/users/${id}`);
+  ctx.redirect(`/users`);
   ctx.status = 301;
 });
 
-router.post('/users/delete', async ctx => {
-  const { id } = ctx.request.body;
+router.get('/users/:id/delete', async ctx => {
+  const { id } = ctx.params;
+
+  if (!ctx.user.isAdmin) {
+    return ctx.status = 403;
+  }
 
   await database.run(`
     DELETE FROM users
@@ -405,13 +445,54 @@ router.post('/users/delete', async ctx => {
 });
 
 router.get('/users', async ctx => {
-  const users = await database.all(`
-    SELECT id, name, role 
+  const users = (await database.all(`
+    SELECT id, name, role, id = ? as isSelf 
     FROM users
-  `);
+    ORDER BY name DESC
+  `, [ctx.user.id])).map(user => ({
+    ...user,
+    canEdit: user.isSelf || ctx.user.isAdmin,
+  }));
 
-  console.log(users);
-  await ctx.render('users', { users, title: 'Users' });
+  await ctx.render('users', { 
+    users, 
+    title: 'Users',
+    user: ctx.user,
+    isAdmin: ctx.user.isAdmin,
+  });
+});
+
+router.get('/users/:id/edit', async ctx => {
+  const { id } = ctx.params;
+  const user = await database.get(`
+    SELECT * FROM users WHERE id = ?
+  `, [id]);
+
+  if (!user || !user.id) {
+    return ctx.status = 404;
+  }
+
+  await ctx.render('usersEdit', {
+    editing: user,
+    user: ctx.user,
+    title: user.id === ctx.user.id 
+      ? 'Change Your Name' 
+      : `Editing ${user.name}`,
+    isAdmin: ctx.user.isAdmin,
+  });
+});
+
+router.post('/users/:id', async ctx => {
+  const { id } = ctx.params;
+  const { name, role } = ctx.request.body;
+
+  if (ctx.user.isAdmin && role) {
+    await database.run(`UPDATE users SET name = ?, role = ? WHERE id = ?`, [name, role, id])
+  } else {
+    await database.run(`UPDATE users SET name = ? WHERE id = ?`, [name, id])
+  }
+
+  ctx.redirect('/users');
 });
 
 router.get('/stats', async ctx => {
@@ -427,6 +508,14 @@ router.get('/stats', async ctx => {
       (SELECT COUNT(*) FROM users) as usersCount,
       (SELECT COUNT(*) FROM experiments) as experimentsCount
   `);
+
+  const ingredientsCount = (await database.all(`
+    SELECT ingredients FROM craftable
+  `)).map(i => i.ingredients.split(/\s*,\s*/))
+     .flat(Infinity)
+     .map(i => i.trim())
+     .reduce((set, curr) => set.add(curr), new Set())
+     .size;
 
   const { averageExperimentsPerArtifact } = await database.get(`
     SELECT AVG(experimentsCount) as averageExperimentsPerArtifact
@@ -466,6 +555,7 @@ router.get('/stats', async ctx => {
       artifactsCount,
       craftablesCount,
       usersCount,
+      ingredientsCount,
       experimentsCount,
       averageExperimentsPerArtifact,
       averageArtifactAuthorshipsPerUser,
@@ -474,6 +564,54 @@ router.get('/stats', async ctx => {
       title: 'Stats',
       user: ctx.user,
     });
+});
+
+router.get('/ingredients', async ctx => {
+  const ingredientsUnprocessed = (await database.all(`
+    SELECT 
+      craftable.ingredients, artifacts.id, artifacts.name
+    FROM 
+      craftable
+    LEFT JOIN
+      artifacts
+    ON
+      craftable.artifactID = artifacts.id
+  `))
+  .map(entry => {
+    return { ...entry, 
+      ingredients: entry.ingredients.split(/\s*,\s*/)
+        .map(i => i.trim())
+    }
+  })
+  .reduce((map, entry) => {
+    const { id, name } = entry;
+
+    for (let ingredient of entry.ingredients) {
+      if (map.has(ingredient)) {
+        const old = map.get(ingredient);
+        map.set(ingredient, old.concat({ id, name }));
+      } else {
+        map.set(ingredient, [{ id, name }]);
+      }
+    }
+
+    return map;
+  }, new Map());
+
+  const ingredients = [];
+  for (let [name, artifacts] of ingredientsUnprocessed) {
+    ingredients.push({ name, 
+      artifacts: artifacts.map(a => (
+        `<a href="/artifacts/${a.id}">${a.name}</a>`
+      )).join(', '),
+    });
+  }
+
+  await ctx.render('ingredients', {
+    ingredients,
+    title: 'All Ingredients',
+    user: ctx.user,
+  });
 });
 
 app.use(router.routes())

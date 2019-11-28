@@ -45,7 +45,7 @@ INSERT INTO Craftable VALUES(1001, "Gently pluck the petals of Glass Flower and 
 INSERT INTO Craftable VALUES(1004, "Crush the petals of Rose and put into a cauldron. Add powdered Unicorn horn and wild berries with it. Brew with freshly fetched creek water till the colour turns red.", "Rose Petals, Unicorn Horn, Wild Berries, Creek Water");
 INSERT INTO Craftable VALUES(1006, "To undo the love, add thorns, skunk hair, milky sap from weeping fig into mortar and crush them together.", "Thorns, Skunk Hair, Milky Sap from Weeping Fig, Mortar");
 INSERT INTO Craftable VALUES(1007, "Add lye and oil together and heat them in a cauldron. Crush a vampire's tooth into the mixture. Add fresh clay from a river and add a 500 year old root of yew tree and sandalwood. Cool the mixture into cake form.", "Lye, Oil, Vampire's Tooth, Fresh Clay, 500 Year Old Root of Yew Tree, Sandalwood");
-INSERT INTO Craftable VALUES(1008, "On a full moon day, get the pulp of cow's tongue plant and add into it a spoonful of powdered toad skeleton. Add lavender for scent and brew it in water. Strain it after boiling.", "Cow's Tongue Plant Pulp, Powdered Toad Skeleton, Lavendar");
+INSERT INTO Craftable VALUES(1008, "On a full moon day, get the pulp of cow's tongue plant and add into it a spoonful of powdered toad skeleton. Add honey and brew it in water. Strain it after boiling.", "Cow's Tongue Plant Pulp, Powdered Toad Skeleton, Honey");
 
 INSERT INTO Users VALUES(1101, "Kira Fowler", "alchemist", '$2b$04$Y3Kajq.brUxubbZTON5V7u59tPmpORwSGQBiM3yPW6UwjZlT1fIeu');
 INSERT INTO Users VALUES(1102, "Nathan Reed", "admin", '$2b$04$Y3Kajq.brUxubbZTON5V7u59tPmpORwSGQBiM3yPW6UwjZlT1fIeu');

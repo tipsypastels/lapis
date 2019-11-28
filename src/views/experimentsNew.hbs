@@ -54,10 +54,10 @@
 
 <form action="/artifacts/{{artifact.id}}/experiments" method="post">
   <input type="hidden" name="artifactID" value={{artifact.id}} />
-  <input type="text" name="research" placeholder="What are you researching?" autofocus />
-  <textarea name="description" placeholder="Describe your results."></textarea>
+  <input required type="text" name="research" placeholder="What are you researching?" autofocus />
+  <textarea namerequired ="description" placeholder="Describe your results."></textarea>
   <input type="text" name="collaborators" placeholder="Add the names of any collaborators (besides you). Seperate with commas." />
-  <input type="text" name="startDate" placeholder="Start of experiment date." />
+  <input required type="text" name="startDate" placeholder="Start of experiment date." />
   <input type="text" name="endDate" placeholder="End of experiment date (Optional)." />
 
   <div class="note">

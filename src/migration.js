@@ -1,7 +1,7 @@
 import fs from 'fs';
 import TABLES from './sql/tables';
 
-const MIGRATE = true;
+const MIGRATE = false;
 
 export default async function migration(database) {
   if (!MIGRATE) {

@@ -1,0 +1,21 @@
+<form method="post" action="/users/{{editing.id}}">
+  <input type="text" name="name" value="{{editing.name}}">
+
+  {{#if isAdmin}}
+    <select name="role">
+      <option value="admin">Admin</option>
+      <option value="alchemist">Alchemist</option>
+      <option value="sorcerer">Sorcerer</option>
+      <option value="thaumaturge">Thaumaturge</option>
+      <option value="conjurer">Conjurer</option>
+    </select>
+
+    <section>
+      <a href="/users/{{editing.id}}/delete">
+        Delete Account
+      </a>
+    </section>
+  {{/if}}
+
+  <input type="submit" />
+</form>
