@@ -9,13 +9,13 @@
       <option value="thaumaturge">Thaumaturge</option>
       <option value="conjurer">Conjurer</option>
     </select>
-
-    <section>
-      <a href="/users/{{editing.id}}/delete">
-        Delete Account
-      </a>
-    </section>
   {{/if}}
 
   <input type="submit" />
 </form>
+
+{{#if isAdmin}}
+  <form method="post" action="/users/{{editing.id}}/delete">
+    <input type="submit" value="Delete Account">
+  </form>
+{{/if}}

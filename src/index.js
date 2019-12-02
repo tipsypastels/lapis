@@ -67,6 +67,11 @@ app.use(async (ctx, next) => {
 app.use(jwt({ secret: 'whatever', cookie: 'lapisLogin' })
   .unless({ path: [/^\/(?:login|static)/] }));
 
+app.use((ctx, next) => {
+  console.log(`${ctx.method} ${ctx.path}`);
+  return next();
+});
+
 router.get('/login', async ctx => {
   if (ctx.user) {
     ctx.redirect('/');
@@ -428,8 +433,9 @@ router.post('/users', async ctx => {
   ctx.status = 301;
 });
 
-router.get('/users/:id/delete', async ctx => {
+router.post('/users/:id/delete', async ctx => {
   const { id } = ctx.params;
+  console.log({ id });
 
   if (!ctx.user.isAdmin) {
     return ctx.status = 403;
@@ -439,6 +445,11 @@ router.get('/users/:id/delete', async ctx => {
     DELETE FROM users
     WHERE id = ?
   `, [id]);
+
+  if (ctx.user.id === id) {
+    await ctx.cookies.set('lapisLogin', null);
+    return ctx.redirect('/login'); 
+  }
 
   ctx.redirect(`/users/`);
   ctx.status = 301;
